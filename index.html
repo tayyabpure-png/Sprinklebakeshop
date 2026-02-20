@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Sprinkle Bakeshop | Artisan Cakes</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #fffafa; --card: #ffffff; --teal: #70c4c4; --pink: #f4b4b4;
+    --dark: #2d2d2d; --gold: #d4af37; --muted: #757575; --nav-h: 70px;
+    --accent: #f8d7da;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  body { background:var(--bg); color:var(--dark); font-family:'Outfit',sans-serif; min-height:100vh; padding-bottom:var(--nav-h); }
+
+  /* HEADER */
+  .header { background:rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); padding:15px 20px; position:sticky; top:0; z-index:100; border-bottom:1px solid var(--accent); box-shadow:0 4px 15px rgba(0,0,0,0.05); }
+  .header-top { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
+  .logo-area { display:flex; align-items:center; gap:12px; }
+  .logo-img { width:45px; height:45px; border-radius:50%; border:2px solid var(--teal); }
+  .brand-name { font-family:'Cormorant Garamond',serif; font-size:24px; font-weight:700; color:var(--teal); line-height:1; }
+  .brand-sub { font-size:10px; color:var(--pink); letter-spacing:2px; text-transform:uppercase; font-weight:600; }
+  
+  .cart-btn { position:relative; background:var(--bg); border:1.5px solid var(--teal); color:var(--teal); width:40px; height:40px; border-radius:12px; display:flex; align-items:center; justify-content:center; }
+  .cart-badge { position:absolute; top:-5px; right:-5px; background:var(--pink); color:white; font-size:10px; width:18px; height:18px; border-radius:50%; display:none; align-items:center; justify-content:center; font-weight:bold; }
+
+  .search-input { width:100%; background:#f5f5f5; border:1px solid transparent; border-radius:10px; padding:10px 15px; font-family:inherit; outline:none; transition: 0.3s; margin-bottom: 12px;}
+  .search-input:focus { border-color:var(--teal); background: white; }
+
+  .cats-scroll { display:flex; gap:8px; overflow-x:auto; scrollbar-width:none; padding-bottom: 5px;}
+  .cats-scroll::-webkit-scrollbar { display:none; }
+  .cat-pill { flex-shrink:0; background:white; border:1px solid var(--accent); border-radius:20px; color:var(--muted); font-size:12px; padding:7px 15px; cursor:pointer; }
+  .cat-pill.active { background:var(--teal); border-color:var(--teal); color:white; font-weight:600; }
+
+  /* MENU GRID */
+  .page { display:none; animation: fadeIn 0.3s ease; } .page.active { display:block; }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  .content { padding:20px 15px; }
+  
+  .section-title { font-family:'Cormorant Garamond',serif; font-size:22px; color:var(--teal); margin-bottom:15px; border-left:4px solid var(--pink); padding-left:10px; }
+  .menu-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  .menu-card { background:white; border-radius:15px; padding:12px; border:1px solid var(--accent); display:flex; flex-direction:column; justify-content:space-between; min-height:140px; box-shadow: 0 4px 10px rgba(0,0,0,0.02); }
+  .card-name { font-size:14px; font-weight:600; margin-bottom:5px; color:var(--dark); }
+  .card-desc { font-size:11px; color:var(--muted); margin-bottom:10px; line-height:1.3; }
+  .card-bottom { display:flex; justify-content:space-between; align-items:center; }
+  .card-price { font-weight:600; color:var(--teal); font-size:14px; }
+  .add-btn { width:30px; height:30px; background:var(--accent); border:none; border-radius:8px; color:var(--dark); cursor:pointer; }
+  .add-btn.in-cart { background:var(--teal); color:white; }
+
+  /* CART & FORMS */
+  .cart-item { background:white; border-radius:12px; padding:12px; margin-bottom:10px; border:1px solid var(--accent); display:flex; justify-content:space-between; align-items:center; }
+  .qty-ctrl { display:flex; align-items:center; gap:10px; }
+  .qty-btn { width:25px; height:25px; border-radius:5px; border:1px solid var(--teal); background:none; color:var(--teal); }
+  
+  .field-input { width:100%; padding:12px; border:1px solid var(--accent); border-radius:10px; margin-bottom:10px; font-family:inherit; }
+  .checkout-btn { width:100%; background:#25d366; color:white; border:none; border-radius:12px; padding:15px; font-size:16px; font-weight:600; display:flex; align-items:center; justify-content:center; gap:10px; margin-top:15px; }
+
+  /* NAV */
+  .bottom-nav { position:fixed; bottom:0; left:0; right:0; height:var(--nav-h); background:white; display:flex; justify-content:space-around; align-items:center; border-top:1px solid var(--accent); }
+  .nav-item { display:flex; flex-direction:column; align-items:center; color:var(--muted); font-size:12px; }
+  .nav-item.active { color:var(--teal); font-weight:600; }
+  .nav-icon { font-size:18px; margin-bottom:4px; }
+
+  .notice-bar { background:var(--accent); color:var(--dark); font-size:11px; text-align:center; padding:5px; font-weight:600; }
+</style>
+</head>
+<body>
+
+<div class="notice-bar">✨ Prebook 3-5 days before for custom orders! 🎂</div>
+
+<div class="header">
+  <div class="header-top">
+    <div class="logo-area">
+      <img src="https://i.ibb.co/C3XgYm5/sprinkles-logo.jpg" class="logo-img" alt="Logo">
+      <div>
+        <div class="brand-name">Sprinkle</div>
+        <div class="brand-sub">Bakeshop</div>
+      </div>
+    </div>
+    <button class="cart-btn" onclick="goToCart()">
+      <i class="fas fa-shopping-basket"></i>
+      <span class="cart-badge" id="cartBadge">0</span>
+    </button>
+  </div>
+  <input class="search-input" type="text" id="searchInput" placeholder="Search for treats..." oninput="renderMenu()">
+  <div class="cats-scroll" id="catPills"></div>
+</div>
+
+<div id="pageMenu" class="page active">
+  <div class="content" id="menuContent"></div>
+</div>
+
+<div id="pageCart" class="page">
+  <div class="content" id="cartContent"></div>
+</div>
+
+<nav class="bottom-nav">
+  <div class="nav-item active" id="navHome" onclick="goToHome()">
+    <i class="fas fa-birthday-cake nav-icon"></i><span>Shop</span>
+  </div>
+  <div class="nav-item" id="navCart" onclick="goToCart()">
+    <i class="fas fa-shopping-bag nav-icon"></i><span>Cart</span>
+  </div>
+</nav>
+
+<script>
+const MENU = [
+  { category: "Customized Cakes ✨", items: [
+    { name: "Theme Cake", price: "Custom", desc: "For all occasions. Price varies by design." },
+    { name: "Artisan Cream Cake", price: 2500, desc: "Freshly baked customized designs." }
+  ]},
+  { category: "Wedding Diaries 💍", items: [
+    { name: "Multi-Tier Wedding Cake", price: "Custom", desc: "Customizable in any design and flavor." },
+    { name: "Nikah Cake", price: 4500, desc: "Elegant floral designs for your big day." }
+  ]},
+  { category: "Cupcakes ✨", items: [
+    { name: "Box of 4", price: 1200, desc: "Customized assorted flavors." },
+    { name: "Box of 6", price: 1800, desc: "Perfect for gifting." },
+    { name: "Box of 12", price: 3400, desc: "Great for celebrations." }
+  ]},
+  { category: "Brownies & Cookies 🍪", items: [
+    { name: "Gooey Fudge Brownies", price: 1500, desc: "Box of 6 pieces." },
+    { name: "Loaded Chocolate Cookies", price: 1200, desc: "Box of 4 soft-baked cookies." }
+  ]},
+  { category: "Fresh Florals 🌻", items: [
+    { name: "Floral Cake Box", price: 3500, desc: "Mini cake surrounded by fresh flowers." },
+    { name: "Sunflower Bouquet", price: 2000, desc: "Fresh seasonal florals." }
+  ]}
+];
+
+let cart = {};
+
+function init() {
+  buildPills();
+  renderMenu();
+}
+
+function buildPills() {
+  const container = document.getElementById('catPills');
+  let html = `<div class="cat-pill active" onclick="filterCat(this, 'ALL')">All</div>`;
+  MENU.forEach(c => {
+    html += `<div class="cat-pill" onclick="filterCat(this, '${c.category}')">${c.category.split(' ')[0]}</div>`;
+  });
+  container.innerHTML = html;
+}
+
+let activeCat = "ALL";
+function filterCat(el, cat) {
+  document.querySelectorAll('.cat-pill').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  activeCat = cat;
+  renderMenu();
+}
+
+function renderMenu() {
+  const search = document.getElementById('searchInput').value.toLowerCase();
+  const container = document.getElementById('menuContent');
+  let html = '';
+  
+  MENU.forEach(sec => {
+    if (activeCat !== "ALL" && sec.category !== activeCat) return;
+    let items = sec.items.filter(i => i.name.toLowerCase().includes(search));
+    if (items.length === 0) return;
+
+    html += `<div class="section-title">${sec.category}</div><div class="menu-grid">`;
+    items.forEach(item => {
+      const key = sec.category + '|' + item.name;
+      const inCart = cart[key] ? 'in-cart' : '';
+      html += `
+        <div class="menu-card">
+          <div>
+            <div class="card-name">${item.name}</div>
+            <div class="card-desc">${item.desc}</div>
+          </div>
+          <div class="card-bottom">
+            <div class="card-price">${typeof item.price === 'number' ? 'Rs ' + item.price : item.price}</div>
+            <button class="add-btn ${inCart}" onclick="addToCart('${sec.category}','${item.name}',${typeof item.price === 'number' ? item.price : 0})">
+              ${inCart ? '<i class="fas fa-check"></i>' : '<i class="fas fa-plus"></i>'}
+            </button>
+          </div>
+        </div>`;
+    });
+    html += `</div>`;
+  });
+  container.innerHTML = html;
+}
+
+function addToCart(cat, name, price) {
+  const key = cat + '|' + name;
+  cart[key] = (cart[key] || 0) + 1;
+  updateUI();
+  renderMenu();
+}
+
+function updateUI() {
+  const count = Object.values(cart).reduce((a, b) => a + b, 0);
+  const badge = document.getElementById('cartBadge');
+  badge.style.display = count > 0 ? 'flex' : 'none';
+  badge.innerText = count;
+}
+
+function renderCart() {
+  const container = document.getElementById('cartContent');
+  const keys = Object.keys(cart);
+  if (keys.length === 0) {
+    container.innerHTML = `<div style="text-align:center; padding:50px 20px;">
+      <i class="fas fa-cookie-bite" style="font-size:50px; color:var(--accent);"></i>
+      <p style="margin-top:15px; color:var(--muted);">Your cart is empty!</p>
+    </div>`;
+    return;
+  }
+
+  let html = '<h3>Your Selection</h3>', total = 0;
+  keys.forEach(key => {
+    const [cat, name] = key.split('|');
+    const item = MENU.find(c => c.category === cat).items.find(i => i.name === name);
+    const price = typeof item.price === 'number' ? item.price : 0;
+    const qty = cart[key];
+    total += price * qty;
+    
+    html += `
+      <div class="cart-item">
+        <div>
+          <div style="font-weight:600">${name}</div>
+          <div style="font-size:12px; color:var(--teal)">${price > 0 ? 'Rs ' + (price * qty) : 'Price on Consultation'}</div>
+        </div>
+        <div class="qty-ctrl">
+          <button class="qty-btn" onclick="changeQty('${key}', -1)">-</button>
+          <span>${qty}</span>
+          <button class="qty-btn" onclick="changeQty('${key}', 1)">+</button>
+        </div>
+      </div>`;
+  });
+
+  html += `
+    <div style="margin-top:20px; border-top:2px dashed var(--accent); padding-top:15px;">
+      <input class="field-input" id="custName" placeholder="Your Name">
+      <input class="field-input" id="custPhone" placeholder="Phone Number">
+      <input class="field-input" id="custAddress" placeholder="Delivery Address (Daska/Gujranwala)">
+      <div style="display:flex; justify-content:space-between; font-weight:bold; font-size:18px; margin:15px 0;">
+        <span>Total Estimate:</span>
+        <span>Rs ${total}</span>
+      </div>
+      <button class="checkout-btn" onclick="sendOrder()">
+        <i class="fab fa-whatsapp"></i> Send Order to Baker
+      </button>
+    </div>`;
+  container.innerHTML = html;
+}
+
+function changeQty(key, delta) {
+  cart[key] += delta;
+  if (cart[key] <= 0) delete cart[key];
+  renderCart();
+  updateUI();
+}
+
+function sendOrder() {
+  const name = document.getElementById('custName').value;
+  if (!name) return alert("Please enter your name");
+  
+  let items = '';
+  Object.keys(cart).forEach(key => {
+    items += `• ${key.split('|')[1]} (x${cart[key]})\n`;
+  });
+
+  const msg = `✨ *New Order: Sprinkle Bakeshop* ✨\n\n*Customer:* ${name}\n*Address:* ${document.getElementById('custAddress').value}\n\n*Items:*\n${items}\n_Note: Please confirm price for custom designs._`;
+  window.open(`https://wa.me/923098827541?text=${encodeURIComponent(msg)}`);
+}
+
+function goToHome() {
+  document.getElementById('pageMenu').classList.add('active');
+  document.getElementById('pageCart').classList.remove('active');
+  document.getElementById('navHome').classList.add('active');
+  document.getElementById('navCart').classList.remove('active');
+}
+function goToCart() {
+  document.getElementById('pageMenu').classList.remove('active');
+  document.getElementById('pageCart').classList.add('active');
+  document.getElementById('navHome').classList.remove('active');
+  document.getElementById('navCart').classList.add('active');
+  renderCart();
+}
+
+init();
+</script>
+</body>
+</html>
